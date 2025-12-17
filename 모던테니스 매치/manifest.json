@@ -1,0 +1,20 @@
+{
+  "short_name": "교대다이어리",
+  "name": "스마트 교대 다이어리",
+  "icons": [
+    {
+      "src": "modern.png?v=2",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "modern.png?v=2",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff"
+}
