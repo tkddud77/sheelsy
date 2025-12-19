@@ -5,16 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes, viewport-fit=cover">
     <title>모던 테니스 [Online] 🎾</title>
     
-     <link rel="manifest" href="manifest.json">
-
-<meta name="mobile-web-app-capable" content="yes">
-<link rel="icon" type="image/jpeg" href="moder.jpg?v=4.0">
-
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="apple-touch-icon" href="moder.jpg?v=4.0">
-
-<link rel="shortcut icon" href="moder.jpg?v=4.0">
+     {
+  "name": "모던 테니스 [Online]",
+  "short_name": "모던테니스",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2d3436",
+  "icons": [
+    {
+      "src": "modern.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "modern.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -2313,4 +2323,5 @@ const role = document.getElementById('editRole').value;
 
         </script>
 </body>
+
 </html>
