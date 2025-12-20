@@ -1,16 +1,18 @@
 {
-  "short_name": "교대다이어리",
-  "name": "스마트 교대 다이어리",
+  "short_name": "모던클럽매니저",
+  "name": "모던 테니스클럽",
   "icons": [
     {
-      "src": "modern.png?v=2",
+      "src": "moder.png",
       "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "192x192",
+      "purpose": "any maskable"
     },
     {
-      "src": "modern.png?v=2",
+      "src": "moder.png",
       "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "512x512",
+      "purpose": "any maskable"
     }
   ],
   "start_url": ".",
