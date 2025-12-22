@@ -17,7 +17,7 @@
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
-    <style>
+   <style>
         :root {
             --court-green: #68A658;
             --court-dark: #3E7C38;
@@ -1896,14 +1896,12 @@ const ADMIN_STORAGE_KEY = 'rankAdmin_' + USER_ID;
         }
     }
 
-    window.deleteFolder = (e, date) => { e.stopPropagation(); if(confirm("폴더 삭제?")) { const u={}; window.matchHistory.forEach(m=>{if(m.date===date)u[`/tennisHistory/${m.id}`]=null;}); update(ref(db), u); } }
-    window.deleteFolder = (e, date) => { 
+window.deleteFolder = (e, date) => { 
     e.stopPropagation(); 
     if(confirm(`'${date}' 폴더와 그 안의 모든 매치를 삭제하시겠습니까?`)) { 
         const updates = {}; 
         window.matchHistory.forEach(m => {
             if(m.date === date) {
-                // 핵심: ROOT + 가 반드시 들어가야 합니다.
                 updates[ROOT + `tennisHistory/${m.id}`] = null;
             }
         }); 
@@ -1914,18 +1912,18 @@ const ADMIN_STORAGE_KEY = 'rankAdmin_' + USER_ID;
             alert("삭제 실패: " + err.message);
         }); 
     } 
-}
+};
+
 window.deleteMatch = (e, id) => { 
     e.stopPropagation(); 
     if(confirm("이 매치 기록을 삭제하시겠습니까?")) {
-        // [수정] ROOT + 를 추가하여 사용자 경로에서 삭제되도록 합니다.
         remove(ref(db, ROOT + `tennisHistory/${id}`)).then(() => {
             alert("매치가 삭제되었습니다.");
         }).catch(err => {
             alert("삭제 실패: " + err.message);
         });
     }
-}
+};
     window.createNewFolderMatch = () => { if(!window.isAdmin) return alert("관리자만"); window.currentFolder=null; goToMatchSetup(); }
     window.createNewMatchInFolder = () => { goToMatchSetup(); }
 
@@ -2130,7 +2128,7 @@ window.deleteMatch = (e, id) => {
     
     window.triggerPhotoUpload=()=>{ document.getElementById('pModalFile').click(); }
     
-    window.updatePlayerPhoto=async(input)=>{ if(!input.files[0])return; const f=input.files[0]; const p=document.getElementById('pModalPhone').value; const resized=await resizeImage(f,300); const idx=window.allMembers.findIndex(m=>m.phone===p); if(idx>=0){ window.allMembers[idx].photo=resized; set(ref(db,'clubData/members'), window.allMembers); document.getElementById('pModalImg').src=resized; renderBoard(); } }
+    window.updatePlayerPhoto=async(input)=>{ if(!input.files[0])return; const f=input.files[0]; const p=document.getElementById('pModalPhone').value; const resized=await resizeImage(f,300); const idx=window.allMembers.findIndex(m=>m.phone===p); if(idx>=0){ window.allMembers[idx].photo=resized; set(ref(db, ROOT + 'clubData/members'), window.allMembers); document.getElementById('pModalImg').src=resized; renderBoard(); } }
     
     function resizeImage(file, max=300){ return new Promise(r=>{ const reader=new FileReader(); reader.onload=e=>{ const img=new Image(); img.onload=()=>{ const cvs=document.createElement('canvas'); const ctx=cvs.getContext('2d'); let w=img.width, h=img.height; if(w>h){if(w>max){h*=max/w; w=max;}}else{if(h>max){w*=max/h; h=max;}} cvs.width=w; cvs.height=h; ctx.drawImage(img,0,0,w,h); r(cvs.toDataURL('image/jpeg',0.8)); }; img.src=e.target.result; }; reader.readAsDataURL(file); }); }
     
@@ -2148,7 +2146,7 @@ window.deleteMatch = (e, id) => {
     
     
     window.openAdminSettings=()=>{ document.getElementById('adminSettingsModal').style.display='flex'; }
-    window.changeAdminPassword=()=>{ const p=document.getElementById('newAdminPwd').value; window.rankingData.settings.adminPwd=p; set(ref(db,'rankingData'), window.rankingData); alert("변경완료"); }
+    window.changeAdminPassword=()=>{ const p=document.getElementById('newAdminPwd').value; window.rankingData.settings.adminPwd=p; set(ref(db, ROOT + 'rankingData'), window.rankingData); alert("변경완료"); }
     window.manualSetTier = (tier) => {
         const phone = document.getElementById('pModalPhone').value;
         if(!phone) return;
@@ -2160,24 +2158,27 @@ window.deleteMatch = (e, id) => {
         renderBoard();
     }
 
-    window.renameFolder = () => {
-        if(!window.currentFolder) return;
-        const newName = prompt("변경할 폴더 이름을 입력하세요:", window.currentFolder);
-        if(!newName || newName === window.currentFolder) return;
-        
-        const updates = {};
-        window.matchHistory.forEach(m => {
-            if(m.date === window.currentFolder) {
-                updates[`/tennisHistory/${m.id}/date`] = newName;
-            }
-        });
-        update(ref(db), updates).then(() => {
-            alert("폴더명이 변경되었습니다.");
-            window.currentFolder = newName;
-            document.getElementById('currentFolderName').innerText = `📂 ${newName}`;
-            renderMatchFolderView(); 
-        });
-    }
+window.renameFolder = () => {
+    if(!window.currentFolder) return;
+    const newName = prompt("변경할 폴더 이름을 입력하세요:", window.currentFolder);
+    if(!newName || newName === window.currentFolder) return;
+    
+    const updates = {};
+    window.matchHistory.forEach(m => {
+        if(m.date === window.currentFolder) {
+            // [수정] 경로 앞에 ROOT를 반드시 추가해야 합니다.
+            updates[ROOT + `tennisHistory/${m.id}/date`] = newName;
+        }
+    });
+
+    // [수정] ref(db) 뒤에 경로를 적지 않고 updates 객체 내의 전체 경로를 사용
+    update(ref(db), updates).then(() => {
+        alert("폴더명이 변경되었습니다.");
+        window.currentFolder = newName;
+        document.getElementById('currentFolderName').innerText = `📂 ${newName}`;
+        renderMatchFolderView(); 
+    }).catch(err => alert("저장 실패: " + err.message));
+}
 
     window.renameMatchTitle = () => {
         const newTitle = prompt("변경할 매치 이름을 입력하세요:", window.currentMatch.title);
